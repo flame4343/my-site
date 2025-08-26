@@ -11,11 +11,11 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -25,29 +25,17 @@ jobs:
         run: |
           corepack enable
           corepack prepare pnpm@9 --activate
-
-      # 可选：缓存 pnpm store（提高速度）
-      - name: Get pnpm store path
-        id: pnpm-store
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-      - name: Cache pnpm store
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.pnpm-store.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
+          pnpm --version
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Build
         run: pnpm build
 
       - name: Add SPA 404 fallback
         run: cp dist/index.html dist/404.html
-        
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
