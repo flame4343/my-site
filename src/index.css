@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom fonts */
+@font-face {
+  font-family: 'Roboto';
+  src: url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Source Han Sans';
+  src: url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+  font-display: swap;
+}
+
+:root {
+  /* Font families */
+  --font-english: 'Roboto', 'Open Sans', sans-serif;
+  --font-chinese: 'Source Han Sans', 'Noto Sans SC', sans-serif;
+  
+  /* Colors */
+  --color-star: #e0e0e0;
+  --color-star-bright: #ffffff;
+  --color-accent: #8a94f0;
+  --color-background: #121212;
+  --color-card: rgba(30, 30, 40, 0.7);
+}
+
+/* Global styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-chinese), var(--font-english);
+  color: var(--color-star);
+  background-color: var(--color-background);
+  line-height: 1.6;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Animation keyframes */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-twinkle {
+  animation: twinkle 3s infinite ease-in-out;
+}
+
+.animate-float {
+  animation: float 6s infinite ease-in-out;
+}
+
+/* Star particle effect */
+.star-particle {
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
