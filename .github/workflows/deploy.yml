@@ -5,58 +5,42 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-# 关键：允许工作流向 gh-pages 分支推送
 permissions:
-  contents: write
+  contents: write   # 允许向 gh-pages 分支推送
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      # 安装 Node，并启用 pnpm（Node 20 自带 corepack）
+        
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
 
-      - name: Enable corepack (pnpm)
-        run: corepack enable
-
-      #（可选但建议）缓存 pnpm store，加速安装
-      - name: Print pnpm store path
-        id: pnpm-store
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-      - name: Cache pnpm store
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.pnpm-store.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
+      - name: Enable pnpm via corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@9 --activate  # 也可固定具体小版本
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
+        
       - name: Build
         run: pnpm build
 
-      # SPA 404 回退，解决 BrowserRouter 子路由直接访问 404 的问题
       - name: Add SPA 404 fallback
         run: cp dist/index.html dist/404.html
-
-      # 发布到 gh-pages 分支（默认就是 gh-pages；若你改名请同步调整）
+        
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           publish_branch: gh-pages
-          # 以下两项可选（更清晰的提交记录）
           user_name: github-actions[bot]
           user_email: 41898282+github-actions[bot]@users.noreply.github.com
